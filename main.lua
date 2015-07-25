@@ -1,14 +1,3 @@
--- Abstract: HelloPhysics project
---
--- Demonstrates creating phyiscs bodies
--- 
--- Version: 1.0
--- 
--- Sample code is MIT licensed, see http://www.coronalabs.com/links/code/license
--- Copyright (C) 2010 Corona Labs Inc. All Rights Reserved.
---
---	Supports Graphics 2.0
----------------------------------------------------------------------------------------
 
 --Ball Object & methods
 Ball =  {img = "", value = 0, imgRef = nil}
