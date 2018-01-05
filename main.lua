@@ -1,9 +1,29 @@
 
 --Ball Object & methods
-Ball =  {img = "", value = 0, imgRef = nil}
+Ball =  {img = "", imgRef = nil}
 
 function Ball:display(x, y)
 	self.imgRef = display.newImage(self.img, x, y)
+	self.imgRef.value = 1
+end
+
+
+local function deepCopy(object)
+    local lookup_table = {}
+    local function _copy(object)
+        if type(object) ~= "table" then
+            return object
+        elseif lookup_table[object] then
+            return lookup_table[object]
+        end
+        local new_table = {}
+        lookup_table[object] = new_table
+        for index, value in pairs(object) do
+            new_table[_copy(index)] = _copy(value)
+        end
+        return setmetatable(new_table, getmetatable(object))
+    end
+    return _copy(object)
 end
 
 --Background set up
@@ -32,14 +52,12 @@ physics.addBody( ground, "static", { friction=0.5, bounce=0.3 } )
 --local crate = display.newImage( "crate.png", 180, -50 )
 --crate.rotation = 5
 
-local redBall = Ball
+local redBall = deepCopy(Ball)
 redBall.img = "red.png"
-redBall.value = 0
 redBall:display(180, -50)
 
-local redBall2 = Ball
+local redBall2 = deepCopy(Ball)
 redBall2.img = "red.png"
-redBall2.value = 0
 redBall2:display(170, -50)
 
 physics.addBody( redBall.imgRef, "dynamic", { density=.8, friction=0.1, bounce=0.8, radius = 27} )
@@ -50,12 +68,33 @@ physics.addBody( redBall2.imgRef, "dynamic", { density=.8, friction=0.1, bounce=
 local function tapListener( event )
     local object = event.target
     display.remove(object)
-    ballCount=ballCount-1
+    object.value = object.value - 1
+    if object.value == 0 then
+    	ballCount=ballCount-1
+    end
     if ballCount == 0 then
         local myText = display.newText( "game over", 100, 200, native.systemFontBold, 20 )
 	    myText:setFillColor( 1, 0, 0.5 )
     end
 
+end
+
+local function deepCopy(object)
+    local lookup_table = {}
+    local function _copy(object)
+        if type(object) ~= "table" then
+            return object
+        elseif lookup_table[object] then
+            return lookup_table[object]
+        end
+        local new_table = {}
+        lookup_table[object] = new_table
+        for index, value in pairs(object) do
+            new_table[_copy(index)] = _copy(value)
+        end
+        return setmetatable(new_table, getmetatable(object))
+    end
+    return _copy(object)
 end
 
 redBall.imgRef:addEventListener( "tap", tapListener )
